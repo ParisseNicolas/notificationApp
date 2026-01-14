@@ -1,15 +1,15 @@
 {
-  "name": "Android Dev",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
+  "name": "Android SDK (Codespaces)",
+  "build": { "dockerfile": "Dockerfile" },
+  "remoteUser": "vscode",
   "customizations": {
     "vscode": {
       "extensions": [
+        "redhat.java",
         "vscjava.vscode-java-pack",
         "fwcd.kotlin"
       ]
     }
   },
-  "remoteUser": "vscode"
+  "postCreateCommand": "/bin/bash -lc 'sdkmanager --list || true'"
 }
