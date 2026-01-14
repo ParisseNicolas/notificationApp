@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">NotifApp</string>
+    <string name="perm_button">Autoriser les notifications (Android 13+)</string>
+    <string name="token_label">Token FCM :</string>
+</resources>
