@@ -4,6 +4,12 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+
+repositories {
+    google()
+    mavenCentral()
+}
+
 android {
     namespace 'fr.nparisse.notifier'
     compileSdk 34
@@ -25,6 +31,19 @@ android {
     }
 
     buildFeatures { viewBinding true }
+
+    
+    compileOptions {
+        // Facultatif si tu utilises le toolchain, mais je garde 17 pour cohérence
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    
+    kotlin {
+        jvmToolchain(17)
+    }
+
 }
 
 dependencies {

@@ -1,3 +1,4 @@
+
 package fr.nparisse.notifier
 
 import android.app.NotificationChannel
@@ -10,34 +11,42 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 
 object NotificationHelper {
-    const val CHANNEL_ID = "alerts_channel"
 
-    fun ensureChannel(context: Context) {
+    /**
+     * Crée (si nécessaire) un canal avec le son et l'importance voulus.
+     * Par défaut : USAGE_ALARM pour maximiser l'audibilité (DND/volume bas).
+     */
+    fun ensureChannel(
+        context: Context,
+        channelId: String,
+        soundName: String = "alert_sound",
+        importance: Int = NotificationManager.IMPORTANCE_HIGH,
+        usage: Int = AudioAttributes.USAGE_ALARM
+    ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val soundUri = Uri.parse("android.resource://${context.packageName}/raw/alert_sound")
-            val attrs = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build()
-
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "Alerts",
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                setSound(soundUri, attrs)
-                enableVibration(true)
-                description = "Notifications avec son personnalisé"
-            }
-
             val mgr = context.getSystemService(NotificationManager::class.java)
-            mgr?.createNotificationChannel(channel)
+            if (mgr?.getNotificationChannel(channelId) == null) {
+                val soundUri = Uri.parse("android.resource://${context.packageName}/raw/$soundName")
+                val attrs = AudioAttributes.Builder()
+                    .setUsage(usage)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build()
+
+                val channel = NotificationChannel(channelId, "Alertes", importance).apply {
+                    setSound(soundUri, attrs)
+                    enableVibration(true)
+                    description = "Notifications d’alerte avec son personnalisé"
+                }
+                mgr?.createNotificationChannel(channel)
+            }
         }
     }
 
-    fun show(context: Context, title: String, body: String) {
-        ensureChannel(context)
-        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+    /**
+     * Affiche une notification sur le canal indiqué.
+     */
+    fun show(context: Context, title: String, body: String, channelId: String) {
+        val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setContentTitle(title)
             .setContentText(body)

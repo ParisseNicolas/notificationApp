@@ -31,8 +31,6 @@ class MainActivity : AppCompatActivity() {
         tokenView = findViewById(R.id.tokenView)
         permButton = findViewById(R.id.permButton)
         permButton.setOnClickListener { askNotificationPermission() }
-
-        NotificationHelper.ensureChannel(this)
         askNotificationPermission()
     }
 
